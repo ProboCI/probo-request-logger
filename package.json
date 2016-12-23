@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ProboCI/probo-request-logger/issues"
   },
-  "homepage": "https://github.com/ProboCI/probo-request-logger#readme"
+  "homepage": "https://github.com/ProboCI/probo-request-logger#readme",
+  "dependencies": {
+    "uuid": "^3.0.1"
+  }
 }
