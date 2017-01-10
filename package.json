@@ -1,6 +1,6 @@
 {
   "name": "probo-request-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yet another request logger for node.js.",
   "main": "index.js",
   "scripts": {
