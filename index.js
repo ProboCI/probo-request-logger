@@ -1,9 +1,14 @@
 'use strict';
-var uuid = require('uuid');
+
+const uuid = require('uuid');
+const querystring = require('querystring');
+const url = require('url');
 
 module.exports = function logRequest(options) {
-  var logger = options.logger;
-  var headerName = options.headerName || 'x-request-id';
+  const logger = options.logger;
+  const headerName = options.headerName || 'x-request-id';
+  const rewriteParams = options.rewriteParams || ['token', 'refreshToken', 'authToken'];
+  const replacementText = options.replacementText || '*****';
 
   function getClientAddress(req) {
     return (req.headers['x-forwarded-for'] || '').split(',')[0] || req.connection.remoteAddress;
@@ -25,6 +30,19 @@ module.exports = function logRequest(options) {
 
     res.setHeader(headerName, id);
 
+    // replace any URL parameters that should be hidden
+    let parsedUrl = url.parse(req.url);
+    if (parsedUrl.query) {
+      let params = querystring.parse(parsedUrl.query);
+      for (var param in params) {
+        if (params.hasOwnProperty(param)) {
+          if (rewriteParams.indexOf(param) >= 0) {
+            params[param] = replacementText;
+          }
+        }
+      }
+    }
+
     var time = process.hrtime();
     res.on('finish', function responseSent() {
       var diff = process.hrtime(time);
@@ -32,7 +50,7 @@ module.exports = function logRequest(options) {
       var context = {
         ip: getClientAddress(req),
         method: req.method,
-        url: req.url,
+        url: (params) ? parsedUrl.pathname + '?' +  querystring.stringify(params) : req.url,
         req,
         res,
         duration: diff[0] * 1e3 + diff[1] * 1e-6,
