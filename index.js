@@ -32,8 +32,9 @@ module.exports = function logRequest(options) {
 
     // replace any URL parameters that should be hidden
     let parsedUrl = url.parse(req.url);
+    let params;
     if (parsedUrl.query) {
-      let params = querystring.parse(parsedUrl.query);
+      params = querystring.parse(parsedUrl.query);
       for (var param in params) {
         if (params.hasOwnProperty(param)) {
           if (rewriteParams.indexOf(param) >= 0) {
