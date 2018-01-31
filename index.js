@@ -36,9 +36,11 @@ module.exports = function logRequest(options) {
     if (parsedUrl.query) {
       params = querystring.parse(parsedUrl.query);
       for (var param in params) {
-        if (params.hasOwnProperty(param)) {
-          if (rewriteParams.indexOf(param) >= 0) {
-            params[param] = replacementText;
+        if (typeof(params) == "object" && typeof(params.hasOwnProperty) == "function") {
+          if (params.hasOwnProperty(param)) {
+            if (rewriteParams.indexOf(param) >= 0) {
+              params[param] = replacementText;
+            }
           }
         }
       }
